@@ -13,5 +13,5 @@ spec:
   placement:
     clusterAffinity:
       clusterNames:
-        - member1
+        - karmada-apiserver
   
