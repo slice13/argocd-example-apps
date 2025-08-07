@@ -1,20 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guestbook-ui
+  labels:
+    app: frontend
+  name: karmada-dashboard
+  namespace: karmada-system
 spec:
-  replicas: 2
-  revisionHistoryLimit: 3
+  replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: guestbook-ui
+      app: frontend
   template:
     metadata:
       labels:
-        app: guestbook-ui
+        app: frontend
     spec:
       containers:
-        - image: gcr.io/google-samples/gb-frontend:v5
-          name: guestbook-ui
+        - image: jcce/karmada-dashboard:v0.1.0
+          name: frontend
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: frontend
+  name: karmada-dashboard
+  namespace: karmada-system
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30486
+  selector:
+    app: frontend
+  type: NodePort
